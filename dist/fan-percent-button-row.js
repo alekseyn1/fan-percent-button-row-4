@@ -23,20 +23,23 @@ class CustomFanPercentRow extends LitElement {
 			sendStateWithSpeed: false,
 			allowDisablingButtons: true,
 			offPercentage: 0,
-			lowPercentage: 33,
-			medPercentage: 66,
-			hiPercentage: 100,
+			lowPercentage: 25,
+			medPercentage: 50,
+			hiPercentage: 75,
+			fullPercentage: 100,
 			width: '30px',
 			height: '30px',
 			isOffColor: '#f44c09',
 			isOnLowColor: '#43A047',
 			isOnMedColor: '#43A047',
 			isOnHiColor: '#43A047',
+			isOnFullColor: '#43A047',
 			buttonInactiveColor: '#759aaa',
 			customOffText: 'OFF',
 			customLowText: 'LOW',
 			customMedText: 'MED',
 			customHiText: 'HIGH',
+			customFullText: 'FULL',
 		};
 	}
 
@@ -49,26 +52,32 @@ class CustomFanPercentRow extends LitElement {
 			_lowSP: Number,
 			_medSP: Number,
 			_highSP: Number,
+			_fullSP: Number,
 			_width: String,
 			_height: String,
 			_leftColor: String,
 			_midLeftColor: String,
+			_midMidColor: String,
 			_midRightColor: String,
 			_rightColor: String,
 			_leftText: String,
 			_midLeftText: String,
+			_midMidText: String,
 			_midRightText: String,
 			_rightText: String,
 			_leftName: String,
 			_midLeftName: String,
+			_midMidName: String,
 			_midRightName: String,
 			_rightName: String,
 			_hideLeft: String,
 			_hideMidLeft: String,
+			_hideMidMid: String,
 			_hideMidRight: String,
 			_hideRight: String,
 			_leftState: Boolean,
 			_midLeftState: Boolean,
+			_midMidState: Boolean,
 			_midRightState: Boolean,
 			_rightState: Boolean,
 		};
@@ -115,6 +124,12 @@ class CustomFanPercentRow extends LitElement {
 						toggles name="${this._midLeftName}"
 						@click=${this.setPercentage}
 						.disabled=${this._midLeftState}>${this._midLeftText}</button>
+          <button
+						class='percentage'
+						style='${this._midMidColor};min-width:${this._width};max-width:${this._width};height:${this._height};${this._hideMidMid}'
+						toggles name="${this._midMidName}"
+						@click=${this.setPercentage}
+						.disabled=${this._midMidState}>${this._midMidText}</button>
 					<button
 						class='percentage'
 						style='${this._midRightColor};min-width:${this._width};max-width:${this._width};height:${this._height};${this._hideMidRight}'
@@ -162,24 +177,29 @@ class CustomFanPercentRow extends LitElement {
 		const OnLowClr = config.isOnLowColor;
 		const OnMedClr = config.isOnMedColor;
 		const OnHiClr = config.isOnHiColor;
+		const OnFullClr = config.isOnFullColor;
 		const OffClr = config.isOffColor;
 		const buttonOffClr = config.buttonInactiveColor;
 		const OffSetpoint = config.offPercentage;
 		const LowSetpoint = config.lowPercentage;
 		const MedSetpoint = config.medPercentage;
 		const HiSetpoint = config.hiPercentage;
+		const FullSetpoint = config.fullPercentage;
 		const custOffTxt = config.customOffText;
 		const custLowTxt = config.customLowText;
 		const custMedTxt = config.customMedText;
 		const custHiTxt = config.customHiText;
+		const custFullTxt = config.customFullText;
 
 		let offSetpoint;
 		let lowSetpoint;
 		let medSetpoint;
 		let hiSetpoint;
+		let fullSetpoint;
 		let low;
 		let med;
 		let high;
+		let full;
 		let offstate;
 
 		if (custSetpoint) {
@@ -208,16 +228,19 @@ class CustomFanPercentRow extends LitElement {
 			}
 		} else {
 			offSetpoint = 0 //parseInt(OffSetpoint);
-			lowSetpoint = 33 //parseInt(LowSetpoint);
-			medSetpoint = 66 //parseInt(MedSetpoint);
-			hiSetpoint = 100 //parseInt(HiSetpoint);
+			lowSetpoint = 25 //parseInt(LowSetpoint);
+			medSetpoint = 50 //parseInt(MedSetpoint);
+			hiSetpoint = 75 //parseInt(HiSetpoint);
+			fullSetpoint = 100 //parseInt(FullSetpoint);
 			if (stateObj && stateObj.attributes) {
-				if (stateObj.state == 'on' && stateObj.attributes.percentage >= 17 && stateObj.attributes.percentage <= 50) {
+				if (stateObj.state == 'on' && stateObj.attributes.percentage >= 1 && stateObj.attributes.percentage <= 25) {
 					low = 'on';
-				} else if (stateObj.state == 'on' && stateObj.attributes.percentage >= 51 && stateObj.attributes.percentage <= 75) {
+				} else if (stateObj.state == 'on' && stateObj.attributes.percentage >= 26 && stateObj.attributes.percentage <= 50) {
 					med = 'on';
-				} else if (stateObj.state == 'on' && stateObj.attributes.percentage >= 76 && stateObj.attributes.percentage <= 100) {
+				} else if (stateObj.state == 'on' && stateObj.attributes.percentage >= 51 && stateObj.attributes.percentage <= 75) {
 					high = 'on';
+				} else if (stateObj.state == 'on' && stateObj.attributes.percentage >= 76 && stateObj.attributes.percentage <= 100) {
+					full = 'on';
 				} else {
 					offstate = 'on';
 				}
@@ -227,6 +250,7 @@ class CustomFanPercentRow extends LitElement {
 		let lowcolor;
 		let medcolor;
 		let hicolor;
+		let fullcolor;
 		let offcolor;
 
 		if (custTheme) {
@@ -244,6 +268,11 @@ class CustomFanPercentRow extends LitElement {
 				hicolor = 'background-color:'  + OnHiClr;
 			} else {
 				hicolor = 'background-color:' + buttonOffClr;
+			}
+			if (full == 'on') {
+				fullcolor = 'background-color:'  + OnFullClr;
+			} else {
+				fullcolor = 'background-color:' + buttonOffClr;
 			}
 			if (offstate == 'on') {
 				offcolor = 'background-color:'  + OffClr;
@@ -266,6 +295,11 @@ class CustomFanPercentRow extends LitElement {
 			} else {
 				hicolor = 'background-color: var(--switch-unchecked-color)';
 			}
+			if (full == 'on') {
+				fullcolor = 'background-color: var(--switch-checked-color)';
+			} else {
+				fullcolor = 'background-color: var(--switch-unchecked-color)';                      
+			}
 			if (offstate == 'on') {
 				offcolor = 'background-color: var(--switch-checked-color)';
 			} else {
@@ -277,6 +311,7 @@ class CustomFanPercentRow extends LitElement {
 		let lowtext = custLowTxt;
 		let medtext = custMedTxt;
 		let hitext = custHiTxt;
+		let fulltext = custFullTxt;
 
 		let buttonwidth = buttonWidth;
 		let buttonheight = buttonHeight;
@@ -285,6 +320,7 @@ class CustomFanPercentRow extends LitElement {
 		let lowname = 'low'
 		let medname = 'medium'
 		let hiname = 'high'
+		let fullname = 'full'
 
 		let hideoff = 'display:block';
 		let hidemedium = 'display:block';
@@ -301,7 +337,7 @@ class CustomFanPercentRow extends LitElement {
 		} else {
 			hideoff = 'display:block';
 		}
-
+		this._stateObj = stateObj;
 		this._stateObj = stateObj;
 		this._width = buttonwidth;
 		this._height = buttonheight;
@@ -309,48 +345,35 @@ class CustomFanPercentRow extends LitElement {
 		this._lowSP = lowSetpoint;
 		this._medSP = medSetpoint;
 		this._highSP = hiSetpoint;
+		this._fullSP = fullSetpoint;
 
 		if (revButtons) {
-			this._leftState = (offstate == 'on' && allowDisable);
-			this._midLeftState = (low === 'on' && allowDisable);
-			this._midRightState = (med === 'on'&& allowDisable);
-			this._rightState = (high === 'on' && allowDisable);
-			this._leftColor = offcolor;
-			this._midLeftColor = lowcolor;
-			this._midRightColor = medcolor;
-			this._rightColor = hicolor;
-			this._leftText = offtext;
-			this._midLeftText = lowtext;
-			this._midRightText = medtext;
-			this._rightText = hitext;
-			this._leftName = offname;
-			this._midLeftName = lowname;
-			this._midRightName = medname;
-			this._rightName = hiname;
-			this._hideLeft = hideoff;
-			this._hideMidLeft = nohide;
-			this._hideMidRight = hidemedium;
-			this._hideRight = nohide;
+
 		} else {
-			this._leftState = (high === 'on' && allowDisable);
-			this._midLeftState = (med === 'on'&& allowDisable);
+			this._leftState = (full === 'on' && allowDisable);
+			this._midLeftState = (high === 'on' && allowDisable);
+			this._midMidState = (med === 'on'&& allowDisable);
 			this._midRightState = (low === 'on' && allowDisable);
 			this._rightState = (offstate == 'on' && allowDisable);
-			this._leftColor = hicolor;
-			this._midLeftColor = medcolor;
+			this._leftColor = fullcolor;
+			this._midLeftColor = hicolor;
+			this._midMidColor = medcolor;
 			this._midRightColor = lowcolor;
 			this._rightColor = offcolor;
-			this._leftText = hitext;
-			this._midLeftText = medtext;
+			this._leftText = fulltext;
+			this._midLeftText = hitext;
+			this._midMidText = medtext;
 			this._midRightText = lowtext;
 			this._rightText = offtext;
-			this._leftName = hiname;
-			this._midLeftName = medname;
+			this._leftName = fullname;
+			this._midLeftName = hiname;
+			this._midMidName = medname;
 			this._midRightName = lowname;
 			this._rightName = offname;
 			this._hideRight = hideoff;
 			this._hideMidRight = nohide;
-			this._hideMidLeft = hidemedium;
+			this._hideMidMid = nohide;
+			this._hideMidLeft = nohide;
 			this._hideLeft = nohide;
 		}
 	}
@@ -380,6 +403,13 @@ class CustomFanPercentRow extends LitElement {
 			this.hass.callService('fan', 'turn_on', {entity_id: this._config.entity, percentage: this._highSP});
 			} else {
 				param.percentage = this._highSP;
+				this.hass.callService('fan', 'set_percentage', param);
+			}
+		} else if (level == 'full') {
+			if(this._config.sendStateWithSpeed) {
+			this.hass.callService('fan', 'turn_on', {entity_id: this._config.entity, percentage: this._fullSP});
+			} else {
+				param.percentage = this._fullSP;
 				this.hass.callService('fan', 'set_percentage', param);
 			}
 		}
